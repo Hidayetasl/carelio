@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hizmetler • Carelio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c83b6;
+            --primary-light: #6cbbd4;
+            --navy: #1a365d;
+            --secondary: #4CAF50;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: #333;
+            background-color: var(--light);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header Styles - Ana sayfa ile aynı lacivert tema */
+        .site-header {
+            background: var(--navy);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo {
+            height: 42px;
+            filter: brightness(0) invert(1);
+        }
+        
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+        
+        .menu {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .menu a {
+            text-decoration: none;
+            color: var(--white);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 6px 0;
+            position: relative;
+            font-size: 1rem;
+        }
+        
+        .menu a:hover {
+            color: var(--primary-light);
+        }
+        
+        .menu a.active {
+            color: var(--primary-light);
+            font-weight: 600;
+        }
+        
+        .menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-light);
+        }
+        
+        .btn-login {
+            background: var(--white);
+            color: var(--navy) !important;
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+        
+        .btn-login:hover {
+            background: var(--primary-light);
+            color: var(--white) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--white);
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: var(--white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hero h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--white);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        /* Services Section - Daire Şeklinde Resimler */
+        .services {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary-light);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin: 40px 0;
+        }
+        
+        .service-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            transition: var(--transition);
+            background: var(--white);
+            padding: 25px 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        .service-icon {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+            border: 3px solid var(--primary-light);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .service-label {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            position: relative;
+            padding: 0 10px;
+        }
+        
+        .service-label::before, .service-label::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 2px;
+            background: var(--primary-light);
+        }
+        
+        .service-label::before {
+            left: -25px;
+        }
+        
+        .service-label::after {
+            right: -25px;
+        }
+        
+        /* Service Detail */
+        .service-detail {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin: 50px 0;
+        }
+        
+        .service-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .service-media {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 300px;
+        }
+        
+        .service-badge {
+            display: inline-block;
+            background: #e8f4ff;
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .service-detail h3 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        
+        .service-detail h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-light);
+        }
+        
+        .service-detail h4 {
+            color: var(--primary);
+            margin: 25px 0 15px 0;
+            font-size: 1.2rem;
+            border-left: 3px solid var(--primary-light);
+            padding-left: 10px;
+        }
+        
+        .service-detail ul {
+            padding-left: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .service-detail li {
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 1rem;
+            position: relative;
+        }
+        
+        .service-detail li:before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        
+        .service-detail p {
+            color: #666;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .video-container {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            position: relative;
+        }
+        
+        .video-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Advantage Details */
+        .advantage-detail {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .advantage-detail p {
+            color: #444;
+            font-size: 0.95rem;
+            margin: 5px 0;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .cta h2 {
+            color: var(--white);
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--white);
+            color: var(--primary);
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Footer */
+        .site-footer {
+            background: var(--navy);
+            color: var(--white);
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            color: var(--white);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--primary-light);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #bbb;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--white);
+            padding-left: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--white);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #bbb;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .services-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .menu {
+                gap: 15px;
+            }
+            
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: var(--navy);
+                flex-direction: column;
+                gap: 0;
+                padding: 20px;
+                transition: 0.5s;
+                box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+            }
+            
+            .menu.active {
+                left: 0;
+            }
+            
+            .menu a {
+                padding: 15px 0;
+                width: 100%;
+                text-align: center;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .hero {
+                padding: 40px 0;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .services {
+                padding: 60px 0;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            .service-detail {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+                padding: 30px;
+            }
+            
+            .service-media {
+                width: 100%;
+            }
+            
+            .video-container {
+                max-width: 100%;
+            }
+            
+            .service-label::before, .service-label::after {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .service-detail {
+                padding: 20px;
+            }
+            
+            .service-icon {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .brand-name {
+                font-size: 1.5rem;
+            }
+            
+            .logo {
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container nav">
+            <div class="brand">
+                <img class="logo" src="images/logo.png" alt="Carelio">
+                <span class="brand-name">Carelio</span>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav class="menu" id="mainMenu">
+                <a href="index.html">Ana Sayfa</a>
+                <a class="active" href="hizmetler.html">Hizmetler</a>
+                <a href="paketler.html">Paketler</a>
+                <a href="teknoloji.html">Teknoloji</a>
+                <a href="hakkimizda.html">Hakkımızda</a>
+                <a href="haberler.html">Haberler</a>
+                <a href="iletisim.html">İletişim</a>
+                <a href="anket.html">Anket</a>
+                <a class="btn-login" href="uye-girisi.html">Üye Girişi</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Hizmetlerimiz</h1>
+            <p>Güvenli, konforlu ve erişilebilir dijital sağlık deneyimi.</p>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Tüm Hizmetlerimiz</h2>
+            </div>
+            
+            <!-- İlk Sıra - 4 Hizmet -->
+            <div class="services-grid">
+                <a class="service-card" href="#ilac">
+                    <div class="service-icon" style="background-image: url('images/ilac.webp');"></div>
+                    <div class="service-label">İlaç Hatırlatma</div>
+                </a>
+                <a class="service-card" href="#doktor">
+                    <div class="service-icon" style="background-image: url('images/doktor.webp');"></div>
+                    <div class="service-label">Doktor Görüşmesi</div>
+                </a>
+                <a class="service-card" href="#psikolog">
+                    <div class="service-icon" style="background-image: url('images/psikolog.webp');"></div>
+                    <div class="service-label">Psikolog & Diyetisyen</div>
+                </a>
+                <a class="service-card" href="#ambulans">
+                    <div class="service-icon" style="background-image: url('images/ambulans.webp');"></div>
+                    <div class="service-label">Acil Yardım</div>
+                </a>
+            </div>
+            
+            <!-- İkinci Sıra - 4 Hizmet -->
+            <div class="services-grid">
+                <a class="service-card" href="#akilliev">
+                    <div class="service-icon" style="background-image: url('images/akilliev.webp');"></div>
+                    <div class="service-label">Akıllı Ev</div>
+                </a>
+                <a class="service-card" href="#checkup">
+                    <div class="service-icon" style="background-image: url('images/checkup.webp');"></div>
+                    <div class="service-label">Check-Up</div>
+                </a>
+                <a class="service-card" href="#veri">
+                    <div class="service-icon" style="background-image: url('images/veri.webp');"></div>
+                    <div class="service-label">Sağlık Verisi</div>
+                </a>
+                <a class="service-card" href="#bilgi">
+                    <div class="service-icon" style="background-image: url('images/bilgi.webp');"></div>
+                    <div class="service-label">Aile Bilgilendirme</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- İlaç Hatırlatma -->
+    <section class="service-detail" id="ilac">
+        <div class="container">
+            <div class="service-detail">
+                <div class="service-info">
+                    <h3>İlaç Hatırlatma</h3>
+                    <h4>Avantajlar</h4>
+                    <ul>
+                        <li>İlaç saatlerini kaçırmazsınız
+                            <div class="advantage-detail">
+                                <p>Özelleştirilmiş hatırlatmalarla ilaçlarınızı zamanında alırsınız, tedavi süreciniz aksamaz.</p>
+                            </div>
+                        </li>
+                        <li>Sesli uyarı
+                            <div class="advantage-detail">
+                                <p>Yüksek sesli bildirimlerle ilaç saatlerini asla kaçırmazsınız, özellikle işitme problemi olan kullanıcılar için ideal.</p>
+                            </div>
+                        </li>
+                        <li>Doktor entegrasyonu
+                            <div class="advantage-detail">
+                                <p>Doktorunuzun reçetesi otomatik olarak sisteme eklenir, manuel giriş gerektirmez.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <h4>Senaryo</h4>
+                    <p>Ayşe Teyze sabah ilacını Carelio sayesinde zamanında aldı. Sistem, ilacını alana kadar her 5 dakikada bir hatırlattı ve ailesine bildirim gönderdi.</p>
+                </div>
+                
+                <div class="service-media">
+                    <div class="video-container">
+                        <video autoplay muted loop playsinline preload="auto">
+                            <source src="videos/ilac.mp4" type="video/mp4">
+                            Tarayıcınız video etiketini desteklemiyor.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Doktor Görüşmesi -->
+    <section class="service-detail" id="doktor">
+        <div class="container">
+            <div class="service-detail">
+                <div class="service-info">
+                    <h3>Doktor Görüşmesi</h3>
+                    <h4>Avantajlar</h4>
+                    <ul>
+                        <li>Evden çıkmadan uzman doktorlarla görüşün
+                            <div class="advantage-detail">
+                                <p>Yüzlerce uzman doktora evinizin konforundan ulaşın, seyahat derdi olmadan konsültasyon yapın.</p>
+                            </div>
+                        </li>
+                        <li>Randevu bekleme süresi olmadan hızlı erişim
+                            <div class="advantage-detail">
+                                <p>Aciliyet gerektiren durumlarda ortalama 15 dakika içinde bir doktorla görüşme imkanı.</p>
+                            </div>
+                        </li>
+                        <li>Güvenli video konferans iletişimi
+                            <div class="advantage-detail">
+                                <p>Uçtan uca şifreleme ile tüm görüşmeleriniz güvende, hiçbir kişisel veriniz üçüncü şahıslarla paylaşılmaz.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <h4>Senaryo</h4>
+                    <p>Mehmet Bey evinden çıkmadan Kardiyoloji uzmanı ile görüşerek EKG sonuçlarını değerlendirdi. Doktor, gereken tedavi planını anında oluşturdu ve Mehmet Bey'in ilaçları eczaneye sipariş olarak gönderildi.</p>
+                </div>
+                
+                <div class="service-media">
+                    <div class="video-container">
+                        <video autoplay muted loop playsinline preload="auto">
+                            <source src="videos/doktor.mp4" type="video/mp4">
+                            Tarayıcınız video etiketini desteklemiyor.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Psikolog & Diyetisyen -->
+    <section class="service-detail" id="psikolog">
+        <div class="container">
+            <div class="service-detail">
+                <div class="service-info">
+                    <h3>Psikolog & Diyetisyen</h3>
+                    <h4>Avantajlar</h4>
+                    <ul>
+                        <li>Ruh sağlığı ve beslenme uzmanlarına kolay erişim
+                            <div class="advantage-detail">
+                                <p>Alanında uzman psikolog ve diyetisyenlere tek tıkla ulaşın, kendinize en uygun profesyoneli seçin.</p>
+                            </div>
+                        </li>
+                        <li>Kişiye özel terapi ve diyet programları
+                            <div class="advantage-detail">
+                                <p>Sağlık durumunuza, yaşam tarzınıza ve ihtiyaçlarınıza özel olarak hazırlanmış programlar.</p>
+                            </div>
+                        </li>
+                        <li>Düzenli takip ve destek
+                            <div class="advantage-detail">
+                                <p>Haftalık ilerleme raporları ve düzenli geri bildirimlerle sürekli destek alın.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <h4>Senaryo</h4>
+                    <p>Zeynep Hanım online psikolog desteği ile pandemi dönemi kaygılarını yönetmeyi öğrendi. Diyetisyen ile birlikte çalışarak hem mental hem fiziksel sağlığını iyileştirdi ve 6 ayda 12 kilo vererek hedefine ulaştı.</p>
+                </div>
+                
+                <div class="service-media">
+                    <div class="video-container">
+                        <video autoplay muted loop playsinline preload="auto">
+                            <source src="videos/psikolog.mp4" type="video/mp4">
+                            Tarayıcınız video etiketini desteklemiyor.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Acil Yardım -->
+    <section class="service-detail" id="ambulans">
+        <div class="container">
+            <div class="service-detail">
+                <div class="service-info">
+                    <h3>Acil Yardım</h3>
+                    <h4>Avantajlar</h4>
+                    <ul>
+                        <li>Tek tuşla acil servis ve yakınlara bildirim
+                            <div class="advantage-detail">
+                                <p>Acil durum butonu ile tek dokunuşla acil servisi arayın ve belirlediğiniz kişilere otomatik konum bildirimi gitsin.</p>
+                            </div>
+                        </li>
+                        <li>Konum bilgisi otomatik paylaşımı
+                            <div class="advantage-detail">
+                                <p>Acil durumlarda tam konumunuz otomatik olarak acil servis ve belirlediğiniz kişilerle paylaşılır.</p>
+                            </div>
+                        </li>
+                        <li>Sağlık verilerinize acil erişim izni
+                            <div class="advantage-detail">
+                                <p>Acil durumlarda sağlık verilerinize (kan grubu, alerjiler, kronik hastalıklar) sağlık ekipleri erişebilir.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <h4>Senaryo</h4>
+                    <p>Ahmet Amca düşme sonrası tek tuşla acil yardım çağırdı ve sağlık verileri otomatik olarak hastaneye iletildi. Ambulans 7 dakika içinde geldi ve doktorlar alerjisi olan ilaçları bilerek müdahale etti.</p>
+                </div>
+                
+                <div class="service-media">
+                    <div class="video-container">
+                        <video autoplay muted loop playsinline preload="auto">
+                            <source src="videos/ambulans.mp4" type="video/mp4">
+                            Tarayıcınız video etiketini desteklemiyor.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Akıllı Ev -->
+    <section class="service-detail" id="akilliev">
+        <div class="container">
+            <div class="service-detail">
+                <div class="service-info">
+                    <h3>Akıllı Ev</h3>
+                    <h4>Avantajlar</h4>
+                    <ul>
+                        <li>Akıllı cihazlarla sağlık takibi
+                            <div class="advantage-detail">
+                                <p>Akıllı saat, tansiyon aleti, kan şekeri ölçer gibi cihazlardan veriler otomatik olarak sistemimize aktarılır.</p>
+                            </div>
+                        </li>
+                        <li>Olağandışı durumlarda otomatik bildirim
+                            <div class="advantage-detail">
+                                <p>Hareket sensörleri ve akıllı cihazlar olağandışı durumları (düşme, bayılma) algılar ve otomatik bildirim gönderir.</p>
+                            </div>
+                        </li>
+                        <li>Ev ortamının sağlığa uygun optimize edilmesi
+                            <div class="advantage-detail">
+                                <p>Akıllı termostat ve hava kalitesi sensörleri ile ev ortamınızı sağlığınıza en uygun şekilde ayarlayın.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <h4>Senaryo</h4>
+                    <p>Nuriye Teyze'nin akıllı bilekliği düşme hareketi algıladı ve oğluna otomatik bildirim gönderdi. Oğlu anında annesini görüntülü arayarak durumunu kontrol edebildi ve gerekirse ambulans çağırdı.</p>
+                </div>
+                
+                <div class="service-media">
+                    <div class="video-container">
+                        <video autoplay muted loop playsinline preload="auto">
+                            <source src="videos/akilliev.mp4" type="video/mp4">
+                            Tarayıcınız video etiketini desteklemiyor.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Check-Up -->
+    <section class="service-detail" id="checkup">
+        <div class="container">
+            <div class="service-detail">
+                <div class="service-info">
+                    <h3>Check-Up</h3>
+                    <h4>Avantajlar</h4>
+                    <ul>
+                        <li>Evde sağlık tarama hizmeti
+                            <div class="advantage-detail">
+                                <p>Evinizin konforunda uzman hemşireler tarafından check-up hizmeti, hastane ortamına gitmenize gerek kalmaz.</p>
+                            </div>
+                        </li>
+                        <li>Düzenli sağlık durumu raporlaması
+                            <div class="advantage-detail">
+                                <p>Check-up sonuçlarınız düzenli olarak raporlanır, zaman içindeki değişimler takip edilir.</p>
+                            </div>
+                        </li>
+                        <li>Erken teşhis imkanı
+                            <div class="advantage-detail">
+                                <p>Düzenli check-up'lar ile olası sağlık sorunları erken evrede tespit edilir, erken müdahale imkanı doğar.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <h4>Senaryo</h4>
+                    <p>Hasan Bey'in düzenli check-up'ında tansiyon değerlerindeki anormallik erken tespit edildi. Kardiyoloji uzmanı ile anında görüşme sağlandı ve önleyici tedavi planı oluşturuldu.</p>
+                </div>
+                
+                <div class="service-media">
+                    <div class="video-container">
+                        <video autoplay muted loop playsinline preload="auto">
+                            <source src="videos/checkup.mp4" type="video/mp4">
+                            Tarayıcınız video etiketini desteklemiyor.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sağlık Verisi -->
+    <section class="service-detail" id="veri">
+        <div class="container">
+            <div class="service-detail">
+                <div class="service-info">
+                    <h3>Sağlık Verisi</h3>
+                    <h4>Avantajlar</h4>
+                    <ul>
+                        <li>Tüm sağlık verileriniz tek platformda
+                            <div class="advantage-detail">
+                                <p>Tüm tahlil sonuçları, reçeteler, doktor notları, aşı bilgileri tek bir platformda güvenle saklanır.</p>
+                            </div>
+                        </li>
+                        <li>Güvenli bulut saklama
+                            <div class="advantage-detail">
+                                <p>Verileriniz şifrelenmiş bulut sunucularında saklanır, cihaz kaybı durumunda dahi veri kaybı yaşanmaz.</p>
+                            </div>
+                        </li>
+                        <li>Doktorlarınızla kolay paylaşım
+                            <div class="advantage-detail">
+                                <p>Tek tıkla sağlık verilerinizi doktorunuzla paylaşın, yeni muayenelerde önceki verileriniz hazır olsun.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <h4>Senaryo</h4>
+                    <p>Elif Hanım'ın tüm tahlil sonuçları ve reçeteleri güvenli bir şekilde saklanıp yeni doktoruyla paylaşıldı. Doktor önceki tedavi sürecini görerek daha doğru teşhis koyabildi.</p>
+                </div>
+                
+                <div class="service-media">
+                    <div class="video-container">
+                        <video autoplay muted loop playsinline preload="auto">
+                            <source src="videos/veri.mp4" type="video/mp4">
+                            Tarayıcınız video etiketini desteklemiyor.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Aile Bilgilendirme -->
+    <section class="service-detail" id="bilgi">
+        <div class="container">
+            <div class="service-detail">
+                <div class="service-info">
+                    <h3>Aile Bilgilendirme</h3>
+                    <h4>Avantajlar</h4>
+                    <ul>
+                        <li>Sevdikleriniz sağlık durumunuzdan haberdar
+                            <div class="advantage-detail">
+                                <p>Belirlediğiniz aile üyeleri sağlık durumunuzu anlık takip edebilir, olağandışı durumlarda anında haberdar olur.</p>
+                            </div>
+                        </li>
+                        <li>Acil durumlarda otomatik bildirim
+                            <div class="advantage-detail">
+                                <p>Acil durumlarda belirlediğiniz kişilere otomatik olarak konum ve sağlık durumu bildirimi gider.</p>
+                            </div>
+                        </li>
+                        <li>İlaç takibi ve doktor randevu hatırlatmaları
+                            <div class="advantage-detail">
+                                <p>Aileniz ilaçlarınızı zamanında alıp almadığınızı ve doktor randevularınızı takip edebilir.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <h4>Senaryo</h4>
+                    <p>Kemal Amca'nın kızı, babasının ilaçlarını düzenli aldığını uygulama üzerinden takip edebiliyor. Babasının tansiyon ölçümlerini anlık görüntüleyebiliyor ve olağandışı bir durumda anında müdahale edebiliyor.</p>
+                </div>
+                
+                <div class="service-media">
+                    <div class="video-container">
+                        <video autoplay muted loop playsinline preload="auto">
+                            <source src="videos/bilgi.mp4" type="video/mp4">
+                            Tarayıcınız video etiketini desteklemiyor.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Hizmetlerimizden Yararlanmaya Başlayın</h2>
+            <p>Carelio'nun sunduğu tüm hizmetlere erişmek için hemen üye olun ve dijital sağlık asistanınızla tanışın.</p>
+            <a href="paketler.html" class="btn">Paketleri Görüntüle</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Carelio</h3>
+                    <p>Sağlık hizmetlerini dijital platforma taşıyarak herkes için erişilebilir kılmak vizyonuyla yola çıktık.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Hızlı Erişim</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Ana Sayfa</a></li>
+                        <li><a href="hizmetler.html">Hizmetler</a></li>
+                        <li><a href="paketler.html">Paketler</a></li>
+                        <li><a href="teknoloji.html">Teknoloji</a></li>
+                        <li><a href="hakkimizda.html">Hakkımızda</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Hizmetler</h3>
+                    <ul class="footer-links">
+                        <li><a href="#ilac">İlaç Hatırlatma</a></li>
+                        <li><a href="#doktor">Doktor Görüşmesi</a></li>
+                        <li><a href="#psikolog">Psikolog & Diyetisyen</a></li>
+                        <li><a href="#ambulans">Acil Yardım</a></li>
+                        <li><a href="#akilliev">Akıllı Ev Entegrasyonu</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>İletişim</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> Carelio Atasşehir, Istanbul</li>
+                        <li><i class="fas fa-phone"></i> 444 1 700</li>
+                        <li><i class="fas fa-envelope"></i> info@carelio.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Carelio. Tüm Hakları Saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mainMenu = document.getElementById('mainMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mainMenu.classList.toggle('active');
+            mobileMenuBtn.innerHTML = mainMenu.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars'></i>';
+        });
+        
+        // Close menu when clicking on a link
+        const menuLinks = document.querySelectorAll('.menu a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mainMenu.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+    </script>
+</body>
+</html>

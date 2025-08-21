@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carelio - Sağlık ve Konfor</title>
+<style>
+* {margin:0; padding:0; box-sizing:border-box;}
+body {font-family:'Segoe UI',sans-serif; background:#f9f9f9; color:#333;}
+
+/* Header */
+header {background:#3d84a8; color:#fff; display:flex; justify-content:space-between; align-items:center; padding:15px 25px; position:fixed; top:0; width:100%; z-index:100; transition:all .3s;}
+header .logo img {height:60px;}
+nav ul {display:flex; list-style:none; gap:20px;}
+nav ul li a {color:white; text-decoration:none; font-weight:600;}
+.hamburger {display:none; font-size:28px; background:none; color:white; border:none;}
+@media(max-width:768px){
+  nav ul {display:none; flex-direction:column; background:#3d84a8; position:absolute; right:0; top:70px; padding:10px;}
+  nav ul.show {display:flex;}
+  .hamburger {display:block;}
+}
+
+/* Hero */
+.hero {
+  margin-top:80px; text-align:center; padding:100px 20px 60px;
+  background:linear-gradient(rgba(61,132,168,0.7),rgba(61,132,168,0.7)), url('images/hero-bg.jpg') center/cover no-repeat;
+  color:white;
+}
+.hero h1 {font-size:36px; margin-bottom:15px;}
+.hero p {font-size:18px; margin-bottom:25px;}
+.hero iframe {width:85%; max-width:700px; height:350px; border:3px solid white; border-radius:10px; margin-bottom:20px;}
+.hero button {
+  background:white; color:#3d84a8; border:none; padding:12px 24px; border-radius:30px; font-size:18px; cursor:pointer;
+}
+.hero button:hover {background:#f1f1f1; color:#2c6a86;}
+
+/* Services */
+.services {padding:50px 20px; text-align:center; max-width:1200px; margin:auto;}
+.services h2 {font-size:32px; color:#3d84a8; margin-bottom:30px;}
+.service-grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px;}
+.card {background:white; padding:20px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); transition:transform .3s, box-shadow .3s; text-align:center;}
+.card:hover {transform:scale(1.05); box-shadow:0 8px 20px rgba(0,0,0,0.2);}
+.card img {width:100px; height:100px; margin-bottom:15px; border-radius:8px;}
+.card h3 {color:#3d84a8; font-size:20px; margin-bottom:10px;}
+.card p {font-size:14px; margin-bottom:10px;}
+.open-popup {
+  background:#3d84a8; color:white; border:none; padding:10px 20px; border-radius:20px; cursor:pointer; font-size:16px;
+}
+.open-popup:hover {background:#2c6a86;}
+
+/* Popups */
+.popup {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000; animation:fadeIn .3s;}
+@keyframes fadeIn {from{opacity:0;} to{opacity:1;}}
+.popup-content {
+  background:white; padding:15px; border-radius:10px; max-width:400px; width:90%; text-align:center;
+  position:relative; animation:scaleUp .3s;
+}
+@keyframes scaleUp {from{transform:scale(.8);} to{transform:scale(1);}}
+.popup-content img {width:100%; border-radius:10px; margin-bottom:10px;}
+.popup-content h2 {color:#3d84a8; margin-bottom:10px; font-size:20px;}
+.popup-content p {font-size:14px; line-height:1.5;}
+.popup-close {
+  position:absolute; top:8px; right:8px; background:#3d84a8; color:white; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;
+}
+
+footer {background:#3d84a8; color:white; text-align:center; padding:20px; margin-top:50px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><img src="images/logo.png" alt="Carelio Logo"></div>
+  <button class="hamburger">☰</button>
+  <nav>
+    <ul>
+      <li><a href="#hero">Ana Sayfa</a></li>
+      <li><a href="#services">Hizmetler</a></li>
+      <li><a href="paketler.html">Paketler</a></li>
+      <li><a href="teknoloji.html">Teknoloji</a></li>
+      <li><a href="https://forms.gle/LYEtVoVyPdqzUWFq9" target="_blank">Anket</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="hero" id="hero">
+  <h1>Yaşlı Dostu Teknoloji ile Güvende Yaşam</h1>
+  <p>Carelio ile sağlıklı, konforlu ve güvenli bir yaşam.</p>
+  <iframe width="560" height="315" 
+src="https://www.youtube.com/embed/dlx5aI_g-2Y?rel=0&modestbranding=1&showinfo=0" 
+title="Carelio Tanıtım Videosu" 
+frameborder="0" 
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe><br>
+  <button onclick="window.open('https://forms.gle/LYEtVoVyPdqzUWFq9','_blank')">Anket Doldur</button>
+</section>
+
+<section class="services" id="services">
+  <h2>Hizmetlerimiz</h2>
+  <div class="service-grid">
+    <div class="card"><img src="images/ilac.webp"><h3>İlaç Hatırlatma</h3><p>Zamanında ilaç uyarısı.</p><button class="open-popup" data-target="popup-ilac">Detay</button></div>
+    <div class="card"><img src="images/doktor.webp"><h3>Doktor Görüşmesi</h3><p>Online randevu ve görüşme.</p><button class="open-popup" data-target="popup-doktor">Detay</button></div>
+    <div class="card"><img src="images/psikolog.webp"><h3>Psikolog & Diyetisyen</h3><p>Psikolojik ve beslenme desteği.</p><button class="open-popup" data-target="popup-psikolog">Detay</button></div>
+    <div class="card"><img src="images/ambulans.webp"><h3>Acil Yardım</h3><p>Acil durumda anında müdahale.</p><button class="open-popup" data-target="popup-ambulans">Detay</button></div>
+    <div class="card"><img src="images/akilliev.webp"><h3>Akıllı Ev</h3><p>Ev otomasyonu ile güvenlik.</p><button class="open-popup" data-target="popup-akilliev">Detay</button></div>
+    <div class="card"><img src="images/checkup.webp"><h3>Check-Up</h3><p>Düzenli sağlık kontrolleri.</p><button class="open-popup" data-target="popup-checkup">Detay</button></div>
+    <div class="card"><img src="images/veri.webp"><h3>Sağlık Verisi Takibi</h3><p>Tansiyon, ateş ve nabız takibi.</p><button class="open-popup" data-target="popup-veri">Detay</button></div>
+    <div class="card"><img src="images/bilgi.webp"><h3>Aile Bilgilendirme</h3><p>Ailenize sağlık raporları.</p><button class="open-popup" data-target="popup-bilgi">Detay</button></div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Carelio - Sağlık ve Konfor</p>
+</footer>
+
+<script>
+document.querySelector('.hamburger').addEventListener('click', () => {
+  document.querySelector('nav ul').classList.toggle('show');
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  const popups = document.querySelectorAll('.popup');
+  const openButtons = document.querySelectorAll('.open-popup');
+  const closeButtons = document.querySelectorAll('.popup-close');
+
+  openButtons.forEach(btn => {
+    btn.addEventListener('click', function () {
+      const target = document.getElementById(this.dataset.target);
+      popups.forEach(p => p.style.display = 'none');
+      target.style.display = 'flex';
+    });
+  });
+
+  closeButtons.forEach(btn => {
+    btn.addEventListener('click', function () {
+      this.closest('.popup').style.display = 'none';
+    });
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('popup')) {
+      e.target.style.display = 'none';
+    }
+  });
+});
+</script>
+</body>
+</html>
