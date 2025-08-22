@@ -142,6 +142,53 @@
         }
         
         /* Hero Section */
+.hero {
+  position: relative;
+  height: 320px;
+  margin-top: 20px;
+  color: var(--white);
+  overflow: hidden;
+  background: transparent !important;
+  border-radius: 12px;
+  width: min(1400px, 95%);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: -2;
+  pointer-events: none;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(44,131,182,0.6) 0%, rgba(108,187,212,0.6) 100%);
+  z-index: -1;
+}
+
+.hero h1, .hero p { text-shadow: 0 2px 6px rgba(0,0,0,0.35); }
+
+@media (max-width: 992px) {
+  .hero { width: 100% !important; margin-left: 0 !important; }
+}
+
         .hero {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: var(--white);
@@ -663,12 +710,18 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="container hero-content">
-            <h1>Hizmetlerimiz</h1>
-            <p>Güvenli, konforlu ve erişilebilir dijital sağlık deneyimi.</p>
-        </div>
-    </section>
+    
+<section class="hero">
+  <video autoplay muted loop playsinline class="hero-video">
+    <source src="videos/slvd_16x9_fill.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="container hero-content">
+    <h1>Hizmetlerimiz</h1>
+    <p>Güvenli, konforlu ve erişilebilir dijital sağlık deneyimi.</p>
+  </div>
+</section>
+
 
     <!-- Services Section -->
     <section class="services">
@@ -1122,5 +1175,33 @@
             });
         });
     </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  function sizeAndCenterHero() {
+    const headerContainer = document.querySelector('.site-header .container');
+    const brand = document.querySelector('.brand');
+    const loginBtn = document.querySelector('.btn-login');
+    const hero = document.querySelector('.hero');
+    if (!headerContainer || !brand || !loginBtn || !hero) return;
+
+    const headerRect = headerContainer.getBoundingClientRect();
+    const brandRect  = brand.getBoundingClientRect();
+    const loginRect  = loginBtn.getBoundingClientRect();
+
+    let width = Math.round((loginRect.right - brandRect.left));
+    const maxWidth = Math.min(1400, headerRect.width * 0.95);
+    if (width < 480) width = Math.min(1200, Math.floor(headerRect.width * 0.9));
+    width = Math.min(width, maxWidth);
+
+    hero.style.width = width + 'px';
+    hero.style.marginLeft = 'auto';
+    hero.style.marginRight = 'auto';
+  }
+  sizeAndCenterHero();
+  window.addEventListener('resize', sizeAndCenterHero);
+});
+</script>
+
 </body>
 </html>
