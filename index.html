@@ -672,12 +672,22 @@
     </header>
 
     <!-- Hero Video Section -->
-    <section class="hero-video">
-        <video autoplay muted loop playsinline>
-            <source src="https://drive.google.com/uc?export=view&id=1E_v3VGz0xsU0W1NYygGGxESJKQF02fWp" type="video/mp4">
-            Tarayıcınız video etiketini desteklemiyor.
-        </video>
-    </section>
+    <section class="hero-video"><!-- Drive preview embed (replaces <video>) -->
+<div class="hero-video-embed">
+  <div class="iframe-wrap">
+    <iframe src="https://drive.google.com/file/d/1E_v3VGz0xsU0W1NYygGGxESJKQF02fWp/preview"
+            allow="autoplay"
+            allowfullscreen
+            frameborder="0"></iframe>
+  </div>
+</div>
+
+<style>
+/* Keep aspect ratio similar to 16:9 and full-bleed look */
+.hero-video-embed .iframe-wrap { position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; }
+.hero-video-embed .iframe-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
+</style>
+</section>
 
     <!-- Birleştirilmiş Bölüm -->
     <section class="combined-section">
