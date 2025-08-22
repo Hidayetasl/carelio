@@ -181,7 +181,8 @@
   inset: 0;
   background: linear-gradient(135deg, rgba(44,131,182,0.6) 0%, rgba(108,187,212,0.6) 100%);
   z-index: -1;
-}
+
+  pointer-events: none;}
 
 .hero h1, .hero p { text-shadow: 0 2px 6px rgba(0,0,0,0.35); }
 
@@ -1163,7 +1164,7 @@
             mainMenu.classList.toggle('active');
             mobileMenuBtn.innerHTML = mainMenu.classList.contains('active') 
                 ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars'></i>';
+                : '<i class="fas fa-bars"></i>';
         });
         
         // Close menu when clicking on a link
@@ -1205,3 +1206,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
+<style>
+/* Carelio mobile menu fix pack */
+.site-header{ z-index: 9999 !important; }
+</style>
