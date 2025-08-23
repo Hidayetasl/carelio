@@ -682,6 +682,31 @@
             }
         }
     </style>
+
+<!-- Mobilde 2 sütun override - siteyi bozmadan sadece hizmetler ızgarasını hedefler -->
+<style>
+@media (max-width: 600px){
+  /* En sık görülen sınıf adları: sadece varsa etkiler */
+  .services-grid,
+  .hizmetler-grid,
+  .grid.services,
+  .cards.grid,
+  [data-grid="services"]{
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+    gap: 15px !important;
+  }
+  /* Eski flex/width kalıntılarını sıfırla */
+  .services-grid > *, 
+  .hizmetler-grid > *, 
+  .grid.services > *, 
+  .cards.grid > *,
+  [data-grid="services"] > *{
+    width: auto !important;
+    margin: 0 !important;
+  }
+}
+</style>
 </head>
 <body>
     <!-- Header -->
