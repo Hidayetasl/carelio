@@ -27,7 +27,7 @@
       padding: 0 20px;
     }
     
-    /* HEADER STİLLERİ - Ana sayfayla uyumlu */
+    /* HEADER STİLLERİ */
     .site-header {
       background: linear-gradient(135deg, #0b3650 0%, #0a4b6d 100%);
       color: white;
@@ -132,77 +132,119 @@
       transition: all 0.3s;
     }
     
-    /* HERO BÖLÜMÜ */
-.hero {
-  position: relative;
-  height: 320px;
-  margin-top: 20px;  /* Menü ile arasına boşluk bırak */
-  color: white;
-  overflow: hidden;
-  background: transparent !important;
-  border-radius: 12px;
-  width: min(1400px, 95%);
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.hero-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  z-index: -2;
-  pointer-events: none;
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(44,131,182,0.6) 0%, rgba(108,187,212,0.6) 100%);
-  z-index: -1;
-}
-
-.hero h1, .hero p { text-shadow: 0 2px 6px rgba(0,0,0,0.35); }
-
-@media (max-width: 992px) {
-  .hero { width: 100% !important; margin-left: 0 !important; }
-}
-
+    /* HERO BÖLÜMÜ - YAZI SOLDA, VİDEO SAĞDA */
     .hero {
-      background: linear-gradient(rgba(11, 54, 80, 0.85), rgba(11, 54, 80, 0.9)), url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
-      background-size: cover;
-      background-position: center;
+      padding: 60px 0;
+      background: linear-gradient(135deg, #2c83b6 0%, #6cbbd4 100%);
       color: white;
-      text-align: center;
-      padding: 100px 0;
-      margin-bottom: 40px;
+      margin-top: 20px;
+      border-radius: 12px;
+      width: min(1200px, 95%);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    .hero-content {
+      flex: 1;
+      text-align: left;
+    }
+
+    .hero-video-container {
+      flex: 1;
+      height: 280px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      background-color: rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
     }
     
+    .hero-video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 15px;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      position: relative;
+      display: inline-block;
+    }
+    
+    .hero h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100px;
+      height: 3px;
+      background: white;
     }
     
     .hero p {
-      font-size: 1.3rem;
-      max-width: 700px;
-      margin: 0 auto;
+      font-size: 1.2rem;
+      margin-bottom: 30px;
       opacity: 0.9;
     }
     
+    .hero-buttons {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .btn-primary {
+      display: inline-block;
+      padding: 12px 30px;
+      background: white;
+      color: #2c83b6;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border: 2px solid white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      background: transparent;
+      color: white;
+    }
+    
+    .btn-secondary {
+      display: inline-block;
+      padding: 12px 30px;
+      background: transparent;
+      color: white;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border: 2px solid white;
+    }
+    
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      background: white;
+      color: #2c83b6;
+    }
+
     /* TEKNOLOJİ BÖLÜMLERİ */
     .section {
       padding: 60px 0;
@@ -230,18 +272,20 @@
       box-shadow: 0 6px 16px rgba(11, 54, 80, 0.2);
     }
     
-    /* TEKNOLOJİ KARTLARI - Tek sıra ve eşit yükseklikte */
+    /* TEKNOLOJİ KARTLARI - 3'LÜ YAN YANA */
     .tech-cards {
       display: flex;
       justify-content: center;
-      gap: 30px;
+      gap: 25px;
       margin-top: 30px;
       flex-wrap: wrap;
     }
     
     .tech-card {
       background: #fff;
-      width: 350px;
+      flex: 1;
+      min-width: 280px;
+      max-width: 350px;
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       overflow: hidden;
@@ -267,8 +311,8 @@
     /* DAİRE ŞEKLİNDE RESİMLER */
     .tech-card-img.circle {
       border-radius: 50%;
-      width: 180px;
-      height: 180px;
+      width: 160px;
+      height: 160px;
       margin: 20px auto;
       overflow: hidden;
       border: 5px solid #fff;
@@ -437,7 +481,7 @@
       padding: 40px 0;
     }
     
-    /* MOBİL UYUMLULUK - Ana sayfayla uyumlu */
+    /* MOBİL UYUMLULUK */
     @media (max-width: 992px) {
       .menu {
         position: fixed;
@@ -488,13 +532,33 @@
         transform: translateY(-9px) rotate(-45deg);
       }
       
-      .hero h1 {
-        font-size: 2.5rem;
+      .hero {
+        width: 100%;
+        border-radius: 0;
+        margin-top: 0;
       }
       
-      .hero p {
-        font-size: 1.1rem;
-        padding: 0 15px;
+      .hero-inner {
+        flex-direction: column;
+      }
+      
+      .hero-content {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      
+      .hero h1::after {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      
+      .hero-buttons {
+        justify-content: center;
+      }
+      
+      .hero-video-container {
+        width: 100%;
+        max-width: 500px;
       }
       
       .benefits-grid {
@@ -506,25 +570,25 @@
         width: 100%;
         max-width: 400px;
       }
+
+      /* Tablet için 2'li kart düzeni */
+      .tech-card {
+        min-width: calc(50% - 20px);
+        max-width: calc(50% - 20px);
+      }
     }
     
     @media (max-width: 768px) {
-      .tech-cards {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .tech-card {
-        width: 100%;
-        max-width: 400px;
-      }
-      
       .hero {
-        padding: 80px 0;
+        padding: 40px 0;
       }
       
       .hero h1 {
         font-size: 2.2rem;
+      }
+      
+      .hero p {
+        font-size: 1.1rem;
       }
       
       .section-title {
@@ -532,18 +596,45 @@
       }
       
       .tech-card-img.circle {
-        width: 150px;
-        height: 150px;
+        width: 140px;
+        height: 140px;
+      }
+
+      /* Mobil için 3'lü kart düzeni (küçük ekranlarda yan yana) */
+      .tech-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        overflow-x: auto;
+        padding-bottom: 15px;
+      }
+      
+      .tech-card {
+        min-width: 250px;
+        max-width: 100%;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      /* Küçük mobil için 2'li kart düzeni */
+      .tech-cards {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
     
     @media (max-width: 480px) {
       .hero {
-        padding: 60px 0;
+        padding: 30px 0;
       }
       
       .hero h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+      }
+      
+      .hero p {
+        font-size: 1rem;
+        margin-bottom: 20px;
       }
       
       .btn-login {
@@ -552,8 +643,7 @@
       }
       
       .brand {
-        flex-direction: column;
-        gap: 5px;
+        flex-direction: row;
       }
       
       .name {
@@ -569,8 +659,234 @@
       }
       
       .tech-card-img.circle {
-        width: 130px;
-        height: 130px;
+        width: 120px;
+        height: 120px;
+      }
+      
+      .btn-primary, .btn-secondary {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+      }
+
+      /* Çok küçük mobil için tekli kart düzeni */
+      .tech-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* YENİ EKLENEN STİLLER - Önceki sayfanın formatına uygun */
+    .services {
+      padding: 60px 0;
+    }
+    
+    .service-detail {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      align-items: center;
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      margin: 40px 0;
+      transition: all 0.3s ease;
+      border-left: 4px solid #2c83b6;
+    }
+    
+    .service-detail:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .service-info {
+      flex: 1;
+      min-width: 300px;
+    }
+    
+    .service-media {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-width: 300px;
+    }
+    
+    .service-detail h3 {
+      color: #2c83b6;
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      position: relative;
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+    
+    .service-detail h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: #6cbbd4;
+    }
+    
+    .service-detail p {
+      color: #666;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    
+    .icon-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .icon-list li {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      padding-left: 0;
+      font-size: 1rem;
+    }
+    
+    .icon-list li i {
+      color: #2c83b6;
+      margin-right: 12px;
+      margin-top: 4px;
+      font-size: 1.1rem;
+    }
+    
+    .service-media img {
+      max-width: 280px;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+    
+    .service-media img:hover {
+      transform: scale(1.03);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* MOBİL İÇİN ÖZEL DÜZENLEMELER - RESİMLER KÜÇÜLTÜLDÜ VE YANINA YAZILAR EKLENDİ */
+    @media (max-width: 768px) {
+      .service-detail {
+        flex-direction: row !important;
+        gap: 20px;
+        text-align: left;
+        padding: 20px;
+        margin: 25px 0;
+        align-items: flex-start;
+      }
+      
+      .service-info, .service-media {
+        flex: 1;
+        min-width: auto;
+      }
+      
+      .service-media {
+        max-width: 120px;
+        order: 1;
+      }
+      
+      .service-info {
+        order: 2;
+      }
+      
+      .service-detail:nth-child(even) .service-media {
+        order: 1;
+      }
+      
+      .service-detail:nth-child(even) .service-info {
+        order: 2;
+      }
+      
+      .service-media img {
+        max-width: 100px;
+        margin: 0;
+      }
+      
+      .service-detail h3 {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+      }
+      
+      .service-detail h3::after {
+        width: 40px;
+        height: 2px;
+      }
+      
+      .service-detail p {
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+      }
+      
+      .icon-list li {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+      }
+      
+      .icon-list li i {
+        font-size: 1rem;
+        margin-right: 8px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .service-detail {
+        padding: 15px;
+        margin: 20px 0;
+        gap: 15px;
+      }
+      
+      .service-media {
+        max-width: 100px;
+      }
+      
+      .service-media img {
+        max-width: 90px;
+      }
+      
+      .service-detail h3 {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+      }
+      
+      .service-detail p {
+        font-size: 0.9rem;
+      }
+      
+      .icon-list li {
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .service-detail {
+        flex-direction: column !important;
+        text-align: center;
+        gap: 15px;
+      }
+      
+      .service-media {
+        max-width: 100%;
+        order: 1;
+      }
+      
+      .service-info {
+        order: 2;
+      }
+      
+      .service-media img {
+        max-width: 120px;
+      }
+      
+      .service-detail h3::after {
+        left: 50%;
+        transform: translateX(-50%);
       }
     }
   </style>
@@ -604,21 +920,96 @@
     </div>
   </header>
 
-  <!-- HERO BÖLÜMÜ -->
-  
-<section class="hero">
-  <video autoplay muted loop playsinline class="hero-video">
-    <source src="videos/slvd_16x9_fill.mp4" type="video/mp4">
-  </video>
-  <div class="hero-overlay"></div>
-  <div class="container hero-content">
-    <h1>Teknoloji</h1>
-    <p>Yaşlı dostu teknoloji ile güvenli, konforlu ve erişilebilir bir yaşam.</p>
-  </div>
-</section>
+  <!-- HERO BÖLÜMÜ - YAZI SOLDA, VİDEO SAĞDA -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <h1>Teknoloji</h1>
+        <p>Yaşlı dostu teknoloji ile güvenli, konforlu ve erişilebilir bir yaşam.</p>
+        <div class="hero-buttons">
+          <a href="#teknolojiler" class="btn-primary">Teknolojileri Keşfet</a>
+          <a href="iletisim.html" class="btn-secondary">İletişime Geçin</a>
+        </div>
+      </div>
+      <div class="hero-video-container">
+        <video autoplay muted loop playsinline>
+          <source src="videos/slvd_16x9_fill.mp4" type="video/mp4">
+          Tarayıcınız video öğesini desteklemiyor.
+        </video>
+      </div>
+    </div>
+  </section>
 
+  <!-- ROBOT TEKNOLOJİLERİ - Önceki sayfanın formatına uygun -->
+  <section class="services" id="teknolojiler">
+    <div class="container">
+      <div class="section-title">
+        <h2>Teknoloji Çözümlerimiz</h2>
+      </div>
 
-  <!-- ROBOT TEKNOLOJİLERİ -->
+      <div class="service-detail">
+        <div class="service-info">
+          <h3>Merkez Platform</h3>
+          <p>Carelio'nun kalbinde, tüm sensörleri, sağlık cihazlarını ve akıllı ev bileşenlerini yöneten akıllı bir merkez bulunur.</p>
+          <ul class="icon-list">
+            <li><i class="fas fa-bolt"></i> Kesintisiz çalışma; elektrik kesilse de kritik işlevler sürer</li>
+            <li><i class="fas fa-expand-arrows-alt"></i> Açık ve genişleyebilir mimari (yeni cihazlar kolay eklenir)</li>
+            <li><i class="fas fa-cogs"></i> Gelişmiş otomasyon: tehlikede otomatik koruma</li>
+          </ul>
+        </div>
+        <div class="service-media">
+          <img src="images/core.png" alt="Merkez Platform">
+        </div>
+      </div>
+
+      <div class="service-detail">
+        <div class="service-media">
+          <img src="images/sensors.png" alt="Sensör Ağı">
+        </div>
+        <div class="service-info">
+          <h3>Sensör Ağı</h3>
+          <p>Hareket, kapı/pencere, gaz, duman ve su sensörlerinden oluşan kablosuz bir ağ evin her köşesini izler.</p>
+          <ul class="icon-list">
+            <li><i class="fas fa-exclamation-triangle"></i> Riskler erken algılanır ve sisteme anında iletilir</li>
+            <li><i class="fas fa-tachometer-alt"></i> Yerel ağ ile hızlı tepki, düşük gecikme</li>
+            <li><i class="fas fa-tools"></i> Kolay kurulum ve düşük bakım ihtiyacı</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="service-detail">
+        <div class="service-info">
+          <h3>Acil Durum Zekâsı</h3>
+          <p>Düşme sensörlerle algılanır. Robot destekli durum analizi devreye girer ve kişiyle sesli iletişime geçer. Acil durum tespit edilirse veya kişi talep ederse acil çağrı başlatılır.</p>
+          <ul class="icon-list">
+            <li><i class="fas fa-first-aid"></i> Düşme & SOS protokolleri</li>
+            <li><i class="fas fa-map-marker-alt"></i> Konum paylaşımı ve durum raporu</li>
+            <li><i class="fas fa-bell"></i> Aile ve acil merkezle eşzamanlı bildirim</li>
+          </ul>
+        </div>
+        <div class="service-media">
+          <img src="images/emergency.png" alt="Acil Durum Zekâsı">
+        </div>
+      </div>
+
+      <div class="service-detail">
+        <div class="service-media">
+          <img src="images/smarthome.png" alt="Akıllı Ev Entegrasyonu">
+        </div>
+        <div class="service-info">
+          <h3>Akıllı Ev Entegrasyonu</h3>
+          <p>Carelio, günlük yaşamı kolaylaştıran akıllı ev otomasyonlarını tek merkezde toplar.</p>
+          <ul class="icon-list">
+            <li><i class="fas fa-plug"></i> Akıllı priz ve ışıklarla enerji tasarrufu</li>
+            <li><i class="fas fa-lock"></i> Akıllı kilitlerle güvenli erişim</li>
+            <li><i class="fas fa-shield-alt"></i> Gaz/su/electric hatlarında otomatik kapama senaryoları</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROBOT TEKNOLOJİLERİ KARTLARI - 3'LÜ YAN YANA -->
   <section class="section section-light">
     <div class="container">
       <div style="text-align: center;">
@@ -691,7 +1082,7 @@
         <div class="benefit-card">
           <div class="benefit-icon"><i class="fas fa-shield-alt"></i></div>
           <h3>7/24 Güvenlik</h3>
-          <p>Robotlarımız günün her saati aktif gözetim ve destek sağlar, güvenliğiniz için çalışır.</p>
+          <p>Robotlarımız günün every saat aktif gözetim ve destek sağlar, güvenliğiniz için çalışır.</p>
         </div>
         <div class="benefit-card">
           <div class="benefit-icon"><i class="fas fa-heartbeat"></i></div>
@@ -752,34 +1143,5 @@
       });
     });
   </script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  function sizeAndCenterHero() {
-    const headerContainer = document.querySelector('.site-header .container');
-    const brand = document.querySelector('.brand');
-    const loginBtn = document.querySelector('.btn-login');
-    const hero = document.querySelector('.hero');
-    if (!headerContainer || !brand || !loginBtn || !hero) return;
-
-    const headerRect = headerContainer.getBoundingClientRect();
-    const brandRect  = brand.getBoundingClientRect();
-    const loginRect  = loginBtn.getBoundingClientRect();
-
-    let width = Math.round((loginRect.right - brandRect.left));
-    const maxWidth = Math.min(1400, headerRect.width * 0.95);
-
-    if (width < 480) width = Math.min(1200, Math.floor(headerRect.width * 0.9));
-    width = Math.min(width, maxWidth);
-
-    hero.style.width = width + 'px';
-    hero.style.marginLeft = 'auto';
-    hero.style.marginRight = 'auto';
-  }
-  sizeAndCenterHero();
-  window.addEventListener('resize', sizeAndCenterHero);
-});
-</script>
-
 </body>
 </html>

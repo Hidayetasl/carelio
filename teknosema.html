@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Carelio Teknoloji Şeması — HTML/SVG (offline v2)</title>
+  <style>
+    :root{
+      --bg:#0b0c0f; --fg:#e8eef7; --card:#121625; --muted:#9aa8bb; --border:#1d2440;
+      --accent:#7c5cff;
+      --c-ble:#22d3ee; --c-zigbee:#f59e0b; --c-wifi:#60a5fa; --c-mqtt:#10b981; --c-https:#3b82f6; --c-ws:#a78bfa; --c-webrtc:#ef4444;
+    }
+    [data-theme="light"]{
+      --bg:#f7f8fb; --fg:#0b0c0f; --card:#ffffff; --muted:#616b7a; --border:#e5e7eb;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    header{position:sticky;top:0;z-index:6;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid var(--border)}
+    .wrap{max-width:1100px;margin:0 auto;padding:14px 18px;display:flex;gap:12px;align-items:center}
+    h1{font-size:20px;margin:0}
+    .muted{color:var(--muted)}
+    .btn{appearance:none;border:1px solid var(--border);background:var(--card);color:var(--fg);padding:8px 12px;border-radius:12px;cursor:pointer;font-weight:700}
+    .btn:hover{border-color:color-mix(in srgb, var(--accent) 40%, transparent)}
+    main{padding:12px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;max-width:1100px;margin:12px auto;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.24)}
+    .legend{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 10px}
+    .chip{border-radius:999px;padding:7px 12px;background:color-mix(in srgb, var(--card) 80%, var(--bg));border:1px solid var(--border);font-weight:700;cursor:pointer}
+    .chip.active{outline:2px solid var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent)}
+    .note{color:var(--muted);font-size:13px}
+    svg{width:100%;height:auto;display:block}
+
+    /* prettier nodes */
+    .node rect{fill:#0f1424;stroke:#3b4666;stroke-width:1.4;rx:12;ry:12}
+    .node.sensor rect{fill:#0e1a2b;stroke:#2a3b6b}
+    .node.edge   rect{fill:#17142a;stroke:#413a7a}
+    .node.cloud  rect{fill:#1a122a;stroke:#6b4e9a}
+    .node.user   rect{fill:#0f261b;stroke:#2a6b4e}
+    [data-theme="light"] .node.sensor rect{fill:#eef6ff;stroke:#c7d8ff}
+    [data-theme="light"] .node.edge   rect{fill:#efeaff;stroke:#d7ccff}
+    [data-theme="light"] .node.cloud  rect{fill:#f3eaff;stroke:#e0d0ff}
+    [data-theme="light"] .node.user   rect{fill:#eafff3;stroke:#c5f0d8}
+    .icon{font-size:14px;opacity:.9}
+    .node text{fill:var(--fg);font-weight:700;font-size:13.5px}
+    .node.on rect{stroke:var(--accent);stroke-width:2.6;filter:drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 55%, transparent))}
+
+    /* edges use currentColor so we can tint by proto */
+    g[data-proto]{color:#6b7280}
+    .edge{stroke:currentColor;stroke-width:2.4;fill:none}
+    .edge-label{fill:var(--fg);font-size:12.5px;font-weight:600}
+    .dim{opacity:.12}
+    .focus{stroke-width:4.2;filter:drop-shadow(0 0 8px color-mix(in srgb, var(--accent) 60%, transparent))}
+
+    .toolbar{position:sticky;top:56px;z-index:5;max-width:1100px;margin:12px auto;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;gap:8px;align-items:center;box-shadow:0 14px 36px rgba(0,0,0,.28)}
+
+    /* layer bands */
+    .band{fill:color-mix(in srgb, var(--accent) 7%, var(--bg));}
+    [data-theme="light"] .band{fill:color-mix(in srgb, var(--accent) 8%, #fff);}  
+  .table-wrap{overflow:auto;max-width:100%}
+    table.inv{width:100%;border-collapse:separate;border-spacing:0;font-size:14.5px}
+    table.inv thead th{position:sticky;top:0;background:var(--card);border-bottom:2px solid var(--accent);text-align:left;padding:10px 12px}
+    table.inv tbody td{padding:10px 12px;border-bottom:1px solid var(--border)}
+    table.inv tbody tr:nth-child(even){background:color-mix(in srgb, var(--fg) 4%, transparent)}
+    table.inv td.price{text-align:right;font-variant-numeric:tabular-nums}
+  </style>
+</head>
+<body data-theme="dark">
+  <header>
+    <div class="wrap">
+      <h1>Carelio Teknoloji Şeması</h1>
+      <span class="muted">• HTML/SVG — offline v2</span>
+      <div style="flex:1"></div>
+      <button class="btn" id="toggleTheme">Tema: <span id="themeName">dark</span></button>
+    </div>
+  </header>
+
+  <main>
+    <!-- STICKY SCENARIO BAR -->
+    <div class="toolbar" id="scenarioBar">
+      <strong>Senaryo:</strong>
+      <button class="btn" id="playFall">Düşme Algısı</button>
+      <button class="btn" id="playGas">Gaz Alarmı</button>
+      <button class="btn" id="playDoor">Kapı Açıldı</button>
+      <span class="muted" style="margin-left:8px">Hız:</span>
+      <select id="speed" class="btn" style="padding:6px 8px">
+        <option value="0.6">0.5×</option>
+        <option value="0.8">0.75×</option>
+        <option value="1" selected>1×</option>
+        <option value="1.3">1.25×</option>
+        <option value="1.6">1.5×</option>
+        <option value="2">2×</option>
+      </select>
+      <span class="muted" style="margin-left:8px">Adım:</span>
+      <span id="stepInfo" class="code">Hazır</span>
+      <div style="flex:1"></div>
+      <button class="btn" id="resetAnim">Sıfırla</button>
+    </div>
+
+    <!-- DIAGRAM CARD -->
+    <div class="card">
+      <div class="legend" id="legend">
+        <span class="chip active" data-proto="ALL">Tümü</span>
+        <span class="chip" data-proto="BLE">Bluetooth LE</span>
+        <span class="chip" data-proto="Zigbee">Zigbee</span>
+        <span class="chip" data-proto="WiFi">Wi‑Fi / HTTP</span>
+        <span class="chip" data-proto="MQTT">MQTT (TLS)</span>
+        <span class="chip" data-proto="HTTPS">HTTPS</span>
+        <span class="chip" data-proto="WebSocket">WebSocket</span>
+        <span class="chip" data-proto="WebRTC">WebRTC</span>
+      </div>
+      <p class="note">Bir protokole tıklayınca o protokole ait hatlar **renkli/kalın** görünür; diğer hatlar **soluk**laşır. Senaryo butonları en üsttedir.</p>
+
+      <!-- Pure SVG Diagram with bands -->
+      <svg viewBox="0 0 820 600" xmlns="http://www.w3.org/2000/svg" aria-label="Carelio Teknoloji Şeması" id="diagram">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
+          </marker>
+          <marker id="arrow-thin" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+
+        <!-- Layer bands -->
+        <rect class="band" x="8" y="40" width="804" height="90" rx="10"/>
+        <rect class="band" x="8" y="180" width="804" height="90" rx="10"/>
+        <rect class="band" x="8" y="320" width="804" height="90" rx="10"/>
+        <rect class="band" x="8" y="460" width="804" height="90" rx="10"/>
+
+        <!-- Layer titles -->
+        <text class="layer-title" x="12" y="36" fill="var(--muted)">Sensörler & Cihazlar</text>
+        <text class="layer-title" x="12" y="176" fill="var(--muted)">Ara Katman (Edge / Hub / Robot)</text>
+        <text class="layer-title" x="12" y="316" fill="var(--muted)">Bulut / Sunucu Katmanı</text>
+        <text class="layer-title" x="12" y="456" fill="var(--muted)">Kullanıcı Katmanı</text>
+
+        <!-- NODES -->
+        <!-- Sensors (y=60) -->
+        <g class="node sensor" id="WR" transform="translate(40,60)"><rect width="120" height="40"/><text class="icon" x="10" y="25">⌚️</text><text x="60" y="25" text-anchor="middle">Bileklik (Düşme)</text></g>
+        <g class="node sensor" id="SL" transform="translate(200,60)"><rect width="120" height="40"/><text class="icon" x="10" y="25">💡</text><text x="60" y="25" text-anchor="middle">Akıllı Işık (Zigbee)</text></g>
+        <g class="node sensor" id="DS" transform="translate(360,60)"><rect width="120" height="40"/><text class="icon" x="10" y="25">🚪</text><text x="60" y="25" text-anchor="middle">Kapı Sensörü (Zigbee)</text></g>
+        <g class="node sensor" id="GD" transform="translate(520,60)"><rect width="120" height="40"/><text class="icon" x="10" y="25">🧯</text><text x="60" y="25" text-anchor="middle">Gaz Dedektörü (Wi‑Fi)</text></g>
+        <g class="node sensor" id="BP" transform="translate(680,60)"><rect width="120" height="40"/><text class="icon" x="10" y="25">🩺</text><text x="60" y="25" text-anchor="middle">Tansiyon Ölçer (BT)</text></g>
+        <g class="node sensor" id="GL" transform="translate(680,110)"><rect width="120" height="40"/><text class="icon" x="10" y="25">🧪</text><text x="60" y="25" text-anchor="middle">Glikoz Sensörü (BT)</text></g>
+        <g class="node sensor" id="SC" transform="translate(680,160)"><rect width="120" height="40"/><text class="icon" x="10" y="25">⚖️</text><text x="60" y="25" text-anchor="middle">Akıllı Tartı (BT)</text></g>
+
+        <!-- Edge / Hub / Robot (y=200) -->
+        <g class="node edge" id="RPI" transform="translate(260,200)"><rect width="150" height="44"/><text class="icon" x="10" y="28">🖥️</text><text x="75" y="26" text-anchor="middle">Raspberry Pi / HA</text></g>
+        <g class="node edge" id="ROB" transform="translate(440,200)"><rect width="130" height="44"/><text class="icon" x="10" y="28">🤖</text><text x="65" y="26" text-anchor="middle">Carelio Robot</text></g>
+        <g class="node edge" id="HUB" transform="translate(620,200)"><rect width="150" height="44"/><text class="icon" x="10" y="28">🏠</text><text x="75" y="26" text-anchor="middle">Carelio HomeHub</text></g>
+
+        <!-- Cloud (y=340) -->
+        <g class="node cloud" id="MQ" transform="translate(300,340)"><rect width="120" height="44"/><text class="icon" x="10" y="28">🔄</text><text x="60" y="26" text-anchor="middle">MQTT Broker</text></g>
+        <g class="node cloud" id="AI" transform="translate(470,340)"><rect width="150" height="44"/><text class="icon" x="10" y="28">☁️</text><text x="75" y="26" text-anchor="middle">Carelio Cloud (AI)</text></g>
+        <g class="node cloud" id="ST" transform="translate(640,340)"><rect width="140" height="44"/><text class="icon" x="10" y="28">💾</text><text x="70" y="26" text-anchor="middle">Depolama (GCP/AWS)</text></g>
+
+        <!-- Users (y=480) -->
+        <g class="node user" id="APP" transform="translate(400,480)"><rect width="150" height="44"/><text class="icon" x="10" y="28">📱</text><text x="75" y="26" text-anchor="middle">Mobil Uygulama</text></g>
+        <g class="node user" id="CC" transform="translate(570,480)"><rect width="140" height="44"/><text class="icon" x="10" y="28">🎧</text><text x="70" y="26" text-anchor="middle">Çağrı Merkezi</text></g>
+
+        <!-- EDGES with ids -->
+        <g id="e_WR_RPI" data-from="WR" data-to="RPI" data-proto="BLE" style="color:var(--c-ble)">
+          <path class="edge" marker-end="url(#arrow)" d="M160,80 C180,80 210,180 260,200" />
+          <text class="edge-label" x="210" y="150">BLE</text>
+        </g>
+        <g id="e_GD_RPI" data-from="GD" data-to="RPI" data-proto="WiFi" style="color:var(--c-wifi)">
+          <path class="edge" marker-end="url(#arrow)" d="M640,80 C600,140 380,160 310,200" />
+          <text class="edge-label" x="480" y="145">Wi‑Fi / HTTP</text>
+        </g>
+        <g id="e_SL_RPI" data-from="SL" data-to="RPI" data-proto="Zigbee" style="color:var(--c-zigbee)">
+          <path class="edge" marker-end="url(#arrow)" d="M320,80 C320,140 280,170 260,200" />
+          <text class="edge-label" x="300" y="140">Zigbee</text>
+        </g>
+        <g id="e_DS_RPI" data-from="DS" data-to="RPI" data-proto="Zigbee" style="color:var(--c-zigbee)">
+          <path class="edge" marker-end="url(#arrow)" d="M480,80 C440,140 360,170 310,200" />
+          <text class="edge-label" x="420" y="140">Zigbee</text>
+        </g>
+
+        <g id="e_BP_HUB" data-from="BP" data-to="HUB" data-proto="BLE" style="color:var(--c-ble)">
+          <path class="edge" marker-end="url(#arrow)" d="M740,80 C760,120 730,180 695,200" />
+          <text class="edge-label" x="730" y="145">BLE</text>
+        </g>
+        <g id="e_GL_HUB" data-from="GL" data-to="HUB" data-proto="BLE" style="color:var(--c-ble)">
+          <path class="edge" marker-end="url(#arrow)" d="M740,130 C760,160 740,185 705,200" />
+          <text class="edge-label" x="740" y="170">BLE</text>
+        </g>
+        <g id="e_SC_HUB" data-from="SC" data-to="HUB" data-proto="BLE" style="color:var(--c-ble)">
+          <path class="edge" marker-end="url(#arrow)" d="M740,180 C760,200 740,200 705,200" />
+          <text class="edge-label" x="740" y="200">BLE</text>
+        </g>
+
+        <g id="e_RPI_ROB" data-from="RPI" data-to="ROB" data-proto="WebSocket" style="color:var(--c-ws)">
+          <path class="edge" marker-start="url(#arrow-thin)" marker-end="url(#arrow-thin)" d="M410,222 H440" />
+          <text class="edge-label" x="425" y="214">Local API / WebSocket</text>
+        </g>
+        <g id="e_RPI_MQ" data-from="RPI" data-to="MQ" data-proto="MQTT" style="color:var(--c-mqtt)">
+          <path class="edge" marker-end="url(#arrow)" d="M335,244 C330,280 340,320 360,340" />
+          <text class="edge-label" x="330" y="300">MQTT (TLS)</text>
+        </g>
+        <g id="e_HUB_MQ" data-from="HUB" data-to="MQ" data-proto="MQTT" style="color:var(--c-mqtt)">
+          <path class="edge" marker-end="url(#arrow)" d="M695,244 C640,290 520,320 420,340" />
+          <text class="edge-label" x="560" y="300">MQTT / HTTPS</text>
+        </g>
+        <g id="e_ROB_MQ" data-from="ROB" data-to="MQ" data-proto="MQTT" style="color:var(--c-mqtt)">
+          <path class="edge" marker-end="url(#arrow)" d="M505,244 C495,290 460,320 420,340" />
+          <text class="edge-label" x="470" y="300">Pub/Sub</text>
+        </g>
+
+        <g id="e_MQ_AI" data-from="MQ" data-to="AI" data-proto="HTTPS" style="color:var(--c-https)">
+          <path class="edge" marker-end="url(#arrow)" d="M420,362 H470" />
+          <text class="edge-label" x="445" y="352">Events/Telemetry</text>
+        </g>
+        <g id="e_AI_ST" data-from="AI" data-to="ST" data-proto="HTTPS" style="color:var(--c-https)">
+          <path class="edge" marker-start="url(#arrow-thin)" marker-end="url(#arrow-thin)" d="M545,362 H640" />
+          <text class="edge-label" x="590" y="352">ETL / Backup</text>
+        </g>
+
+        <g id="e_AI_APP" data-from="AI" data-to="APP" data-proto="HTTPS" style="color:var(--c-https)">
+          <path class="edge" marker-end="url(#arrow)" d="M545,384 C520,430 490,470 475,480" />
+          <text class="edge-label" x="520" y="430">Push (FCM/APNS)</text>
+        </g>
+        <g id="e_AI_CC" data-from="AI" data-to="CC" data-proto="HTTPS" style="color:var(--c-https)">
+          <path class="edge" marker-end="url(#arrow)" d="M620,384 C620,420 640,470 640,480" />
+          <text class="edge-label" x="628" y="430">Dashboard / SMS / IVR</text>
+        </g>
+
+        <g id="e_RPI_SL" data-from="RPI" data-to="SL" data-proto="Zigbee" style="color:var(--c-zigbee)">
+          <path class="edge" marker-end="url(#arrow)" d="M260,222 C220,200 240,120 260,100" />
+          <text class="edge-label" x="240" y="150">Otomasyon (ZHA)</text>
+        </g>
+        <g id="e_RPI_DS" data-from="RPI" data-to="DS" data-proto="Zigbee" style="color:var(--c-zigbee)">
+          <path class="edge" marker-end="url(#arrow)" d="M310,222 C350,200 420,120 420,100" />
+          <text class="edge-label" x="360" y="150">Durum İzleme</text>
+        </g>
+        <g id="e_ROB_APP" data-from="ROB" data-to="APP" data-proto="WebRTC" style="color:var(--c-webrtc)">
+          <path class="edge" marker-end="url(#arrow)" d="M505,222 C520,260 500,460 475,480" />
+          <text class="edge-label" x="510" y="320">WebRTC / Link</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- INVENTORY TABLE -->
+    <div class="card" id="envanter">
+      <h3 style="margin:0 0 10px">Bileşen Envanteri</h3>
+      <div class="legend" style="align-items:center;gap:10px">
+        <input id="invSearch" class="btn" placeholder="Ara: bölüm, bileşen, marka/model…" style="min-width:260px"/>
+        <div style="flex:1"></div>
+        <strong>Toplam:</strong> <span id="invTotal" class="code">—</span>
+      </div>
+      <div class="table-wrap">
+        <table class="inv">
+          <thead>
+            <tr>
+              <th style="min-width:140px">Bölüm</th>
+              <th style="min-width:160px">Bileşen</th>
+              <th style="min-width:220px">Önerilen Marka/Model</th>
+              <th style="min-width:140px">Ortalama Fiyat (₺)</th>
+              <th style="min-width:260px">Notlar</th>
+              <th style="min-width:260px">Sisteme Katkısı / Hizmeti</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Merkez Sistem</td><td>Raspberry Pi 4 (4–8 GB) set</td><td>Raspberry Pi 4 Model B</td><td class="price" data-val="3400">3.400,00</td><td>Home Assistant kurulumu için merkez</td><td>Tüm sistemin beyni, cihaz verilerini işler ve otomasyonları çalıştırır</td></tr>
+            <tr><td>Merkez Sistem</td><td>Zigbee/Matter Hub</td><td>Sonoff Zigbee 3.0 USB Dongle / SkyConnect</td><td class="price" data-val="800">800,00</td><td>Zigbee cihazları bağlamak için</td><td>Zigbee/Matter cihazların köprülenmesi, tüm sensörleri bağlar</td></tr>
+            <tr><td>Merkez Sistem</td><td>UPS (mini)</td><td>APC Back-UPS 650VA / Tunçmatik</td><td class="price" data-val="3250">3.250,00</td><td>Elektrik kesintisine karşı modem + Pi koruması</td><td>Elektrik kesilse bile sistemin çalışmaya devam etmesini sağlar</td></tr>
+            <tr><td>Kullanıcı Arayüzü</td><td>Amazon Echo Show 10</td><td>Amazon Echo Show 10 (3. Nesil)</td><td class="price" data-val="12500">12.500,00</td><td>Zigbee hub entegre, hareketli ekran, Alexa + HA entegrasyonu</td><td>Ana kullanıcı arayüzü, yaşlı dostu ekran, sesli kontrol ve bildirim</td></tr>
+            <tr><td>Sensörler</td><td>Hareket Sensörü</td><td>Xenon Smart Zigbee / Sonoff SNZB-03P</td><td class="price" data-val="625">625,00</td><td>Zigbee tabanlı, HA uyumlu</td><td>Hareket algılayarak ışık, kamera veya robotları tetikler</td></tr>
+            <tr><td>Sensörler</td><td>Kapı/Pencere Sensörü</td><td>Sonoff SNZB-04P / S-Link SL-ZS02</td><td class="price" data-val="585">585,00</td><td>Açılma/kapanma algılama</td><td>Kapı/pencere açıldığında güvenlik ve ziyaretçi senaryolarını tetikler</td></tr>
+            <tr><td>Sensörler</td><td>Gaz Sensörü</td><td>Tuya Zigbee Gaz Dedektörü</td><td class="price" data-val="1500">1.500,00</td><td>Gaz kaçağı alarmı</td><td>Gaz kaçağı olduğunda uyarı verir, otomatik vana kapatma başlatır</td></tr>
+            <tr><td>Sensörler</td><td>Duman Sensörü</td><td>Heiman Zigbee Duman Dedektörü</td><td class="price" data-val="1850">1.850,00</td><td>Duman/yangın alarmı</td><td>Yangın/duman tespitinde alarm verir, elektrik/gaz kesmeyi tetikler</td></tr>
+            <tr><td>Sensörler</td><td>Su Kaçak Sensörü</td><td>Sonoff SNZB-05P / MerryIoT Leak Sensor</td><td class="price" data-val="1285">1.285,00</td><td>Su sızıntısı tespiti, vanayı tetikler</td><td>Su baskınında otomatik vanayı kapatma ve alarm bildirimi</td></tr>
+            <tr><td>Acil Durum</td><td>Düşme Bilekliği</td><td>Tunstall Vibby Fall Detector / Tuya SOS Bileklik</td><td class="price" data-val="4500">4.500,00</td><td>Düşme algılama + SOS çağrısı</td><td>Yaşlının düşmesini algılar, acil yardım sürecini tetikler</td></tr>
+            <tr><td>Acil Durum</td><td>SOS Butonu</td><td>Tuya Zigbee SOS Button / Heiman Panic Button</td><td class="price" data-val="800">800,00</td><td>Elde / duvara monte</td><td>Kullanıcı panik durumunda tek tuşla yardım çağrısı yapabilir</td></tr>
+            <tr><td>Akıllı Kontrol</td><td>Akıllı Priz</td><td>Xiaomi Mi Smart Plug / Philips Hue Plug</td><td class="price" data-val="1210">1.210,00</td><td>Cihaz aç/kapa + enerji ölçüm</td><td>Bağlı cihazları açma/kapama ve enerji takibi</td></tr>
+            <tr><td>Akıllı Kontrol</td><td>Akıllı Işık</td><td>Philips Hue Zigbee Ampul</td><td class="price" data-val="1100">1.100,00</td><td>Sahne aydınlatmaları</td><td>Oda ışıklarını senaryolara göre aç/kapat</td></tr>
+            <tr><td>Akıllı Kontrol</td><td>Akıllı Kilit</td><td>Yale Linus / Nuki Smart Lock</td><td class="price" data-val="7500">7.500,00</td><td>Uzaktan kapı aç/kapat</td><td>Kapının uzaktan kilitlenmesi/açılması, güvenlik sağlar</td></tr>
+            <tr><td>Sağlık Cihazları</td><td>Tansiyon Ölçer</td><td>Omron Evolv (Bluetooth)</td><td class="price" data-val="3000">3.000,00</td><td>HA’ya Google Fit/Apple Health üzerinden bağlanır</td><td>Kullanıcının tansiyonunu ölçüp HA’ya veri gönderir</td></tr>
+            <tr><td>Sağlık Cihazları</td><td>Akıllı Tartı</td><td>Withings Body+ (Wi‑Fi)</td><td class="price" data-val="4000">4.000,00</td><td>Kilo, BMI, vücut kompozisyonu</td><td>Kilo ve vücut analizini raporlar</td></tr>
+            <tr><td>Sağlık Cihazları</td><td>Nabız Oksimetre (SpO₂)</td><td>Beurer PO60 (Bluetooth)</td><td class="price" data-val="1850">1.850,00</td><td>SpO₂ + nabız ölçüm</td><td>Oksijen satürasyonu ve nabız ölçümü sağlar</td></tr>
+            <tr><td>Sağlık Cihazları</td><td>Glikoz Ölçüm</td><td>FreeStyle Libre 2</td><td class="price" data-val="3000">3.000,00</td><td>Sürekli ölçüm / API ile entegrasyon</td><td>Kan şekeri takibi yapar, aileye rapor gönderir</td></tr>
+            <tr><td>Sağlık Cihazları</td><td>Akıllı İlaç Kutusu</td><td>MedMinder / Tuya Akıllı İlaç Kutusu</td><td class="price" data-val="2000">2.000,00</td><td>İlaç saatinde alarm, açılma sensörü</td><td>İlaç saatini hatırlatır, alınmadığında uyarı verir</td></tr>
+            <tr><td>Güvenlik Vanaları</td><td>Gaz Vanası Kapatma</td><td>Tuya Zigbee Gaz Vanası Motoru</td><td class="price" data-val="2000">2.000,00</td><td>Gaz kaçağında otomatik kapama</td><td>Gaz vanasını kapatarak güvenliği sağlar</td></tr>
+            <tr><td>Güvenlik Vanaları</td><td>Su Vanası Kapatma</td><td>Tuya Zigbee Su Vanası Motoru</td><td class="price" data-val="1600">1.600,00</td><td>Su kaçağında otomatik kapama</td><td>Su vanasını kapatarak sel riskini önler</td></tr>
+            <tr><td>Güvenlik Vanaları</td><td>Elektrik Ana Giriş Kesme</td><td>Shelly Pro 4PM / Sonoff 4CH Pro R3</td><td class="price" data-val="2750">2.750,00</td><td>Panoya montaj, ana hattı keser</td><td>Ana elektrik hattını keserek yangın riskini azaltır</td></tr>
+            <tr><td>Video & Görüntü</td><td>Akıllı Kapı Zili</td><td>Eufy Video Doorbell 2K (Zigbee)</td><td class="price" data-val="4250">4.250,00</td><td>Zigbee destekli, abonelik gerektirmez</td><td>Ziyaretçiyi görüntüleyip HA’ya canlı video aktarır</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="card">
+      <details open>
+        <summary>Notlar & Hızlı Kontrol Listesi</summary>
+        <ul>
+          <li>Yerel ağ: <span class="code">Raspberry Pi + Zigbee dongle</span> (ZHA) önerilir.</li>
+          <li>Protokol standardı: <span class="code">MQTT (TLS)</span>, topic şeması: <span class="code">carelio/&lt;deviceType&gt;/&lt;deviceId&gt;/&lt;event&gt;</span>.</li>
+          <li>Kimlik & yetki: <span class="code">OAuth2 / JWT</span>, rol tabanlı erişim (<span class="code">RBAC</span>).</li>
+          <li>Push: <span class="code">FCM/APNS</span>; çağrı merkezi için <span class="code">SIP/VoIP</span> veya <span class="code">WebRTC</span>.</li>
+          <li>Yedekleme: AI çıktı & ham telemetri → <span class="code">Object Storage (S3/GCS)</span>.</li>
+        </ul>
+      </details>
+    </div>
+  </main>
+
+  <footer class="muted" style="text-align:center;padding:18px">Carelio • Teknoloji Şeması — HTML/SVG (offline v2)</footer>
+
+  <script>
+  // === Tema ===
+  (function(){
+    const preferDark = matchMedia('(prefers-color-scheme: dark)').matches; 
+    let theme = localStorage.getItem('svg-theme') || (preferDark ? 'dark' : 'light');
+    const body = document.body; const tName = document.getElementById('themeName');
+    function applyTheme(next){ body.setAttribute('data-theme', next==='dark'?'dark':'light'); if(tName) tName.textContent = next; theme = next; localStorage.setItem('svg-theme', next); }
+    applyTheme(theme);
+    const toggle = document.getElementById('toggleTheme');
+    if(toggle) toggle.addEventListener('click',()=>{ applyTheme(theme==='dark'?'light':'dark'); });
+  })();
+
+  // === Diyagram & Protokol Filtresi ===
+  const diagram = document.getElementById('diagram');
+  const chips = document.querySelectorAll('.chip');
+  const root = document.documentElement;
+  const colorByProto = { BLE:'#22d3ee', Zigbee:'#f59e0b', WiFi:'#60a5fa', MQTT:'#10b981', HTTPS:'#3b82f6', WebSocket:'#a78bfa', WebRTC:'#ef4444' };
+  function setAccent(c){ root.style.setProperty('--accent', c || '#7c5cff'); }
+  function setFilter(proto){
+    if(!diagram) return;
+    const edges = [...diagram.querySelectorAll('g[data-proto]')];
+    diagram.querySelectorAll('.node').forEach(n=>n.classList.remove('on'));
+    if(proto==='ALL'){
+      setAccent('#7c5cff');
+      edges.forEach(e=>{ e.classList.remove('dim','focus'); });
+      return;
+    }
+    const color = colorByProto[proto] || '#7c5cff';
+    setAccent(color);
+    const activeNodes = new Set();
+    edges.forEach(e=>{
+      const p = e.getAttribute('data-proto');
+      if(p===proto){ e.classList.add('focus'); e.classList.remove('dim'); activeNodes.add(e.getAttribute('data-from')); activeNodes.add(e.getAttribute('data-to')); }
+      else { e.classList.remove('focus'); e.classList.add('dim'); }
+    });
+    activeNodes.forEach(id=>{ const n = diagram.querySelector('#'+id); if(n) n.classList.add('on'); });
+  }
+  const legend = document.getElementById('legend');
+  if(legend) legend.addEventListener('click', (ev)=>{
+    const el = ev.target.closest('.chip'); if(!el || isAnimating) return;
+    chips.forEach(c=>c.classList.remove('active')); el.classList.add('active');
+    setFilter(el.dataset.proto);
+  });
+
+  // === Senaryo Animasyonu ===
+  const E = id => document.getElementById(id);
+  const scenarios = {
+    fall: { edges: ['e_WR_RPI','e_RPI_MQ','e_MQ_AI','e_AI_APP','e_AI_CC'], labels:[
+      'Bileklik → Raspberry Pi (BLE)',
+      'Raspberry Pi → MQTT Broker (MQTT)',
+      'MQTT Broker → Carelio Cloud (Events)',
+      'Carelio Cloud → Mobil Uygulama (Push)',
+      'Carelio Cloud → Çağrı Merkezi (Dashboard/SMS/IVR)'
+    ]},
+    gas:  { edges: ['e_GD_RPI','e_RPI_MQ','e_MQ_AI','e_AI_APP'], labels:[
+      'Gaz Dedektörü → Raspberry Pi (Wi‑Fi/HTTP)',
+      'Raspberry Pi → MQTT Broker (MQTT)',
+      'MQTT Broker → Carelio Cloud (Events)',
+      'Carelio Cloud → Mobil Uygulama (Push)'
+    ]},
+    door: { edges: ['e_DS_RPI','e_RPI_SL'], labels:[
+      'Kapı Sensörü → Raspberry Pi (Zigbee)',
+      'Raspberry Pi → Akıllı Işık (ZHA Otomasyon)'
+    ]}
+  };
+  let isAnimating = false; let rafId=null; let timers=[];
+  const stepInfo = document.getElementById('stepInfo');
+
+  function clearAll(){
+    timers.forEach(t=>clearTimeout(t)); timers=[]; cancelAnimationFrame(rafId); rafId=null; isAnimating=false;
+    if(stepInfo) stepInfo.textContent = 'Hazır';
+    if(!diagram) return;
+    diagram.querySelectorAll('g[data-proto]').forEach(g=>{
+      g.classList.remove('focus','dim');
+      const p=g.querySelector('path.edge'); if(p){ p.style.transition=''; p.style.strokeDasharray=''; p.style.strokeDashoffset=''; p.style.filter=''; }
+    });
+    diagram.querySelectorAll('.node').forEach(n=>n.classList.remove('on'));
+    const r=diagram.querySelector('.runner'); if(r) r.remove();
+  }
+
+  function moveDotAlong(path, color, duration){
+    return new Promise(resolve => {
+      const r = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      r.setAttribute('class','runner'); r.setAttribute('r','5'); r.style.fill = color; r.style.filter = `drop-shadow(0 0 8px ${color})`;
+      diagram.appendChild(r);
+      const total = path.getTotalLength();
+      const start = performance.now();
+      const tick = (now)=>{
+        const t = Math.min(1, (now - start)/duration);
+        const d = total * t; const pt = path.getPointAtLength(d);
+        r.setAttribute('cx', pt.x); r.setAttribute('cy', pt.y);
+        if(t < 1){ rafId = requestAnimationFrame(tick);} else { r.remove(); resolve(); }
+      };
+      rafId = requestAnimationFrame(tick);
+    });
+  }
+
+  async function animateEdge(g, duration){
+    const path = g.querySelector('path.edge'); if(!path) return; 
+    const proto = g.getAttribute('data-proto'); const color = colorByProto[proto] || '#fff';
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    path.getBoundingClientRect();
+    path.style.transition = `stroke-dashoffset ${duration}ms linear, stroke-width .2s`;
+    path.style.strokeDashoffset = 0; path.style.filter = `drop-shadow(0 0 8px ${color})`;
+    g.classList.add('focus'); g.classList.remove('dim');
+    const from = g.getAttribute('data-from'); const to = g.getAttribute('data-to');
+    const n1 = E(from), n2 = E(to); if(n1) n1.classList.add('on'); if(n2) n2.classList.add('on');
+    await moveDotAlong(path, color, duration);
+  }
+
+  async function animateScenario(key){
+    if(isAnimating) return; isAnimating = true; chips.forEach(c=>c.classList.remove('active'));
+    setFilter('ALL');
+    if(diagram) diagram.querySelectorAll('g[data-proto]').forEach(g=>g.classList.add('dim'));
+    const sc = scenarios[key]; if(!sc){ isAnimating=false; return; }
+    const firstProto = (E(sc.edges[0])?.getAttribute('data-proto')) || '';
+    setAccent(colorByProto[firstProto] || '#7c5cff');
+    const speed = parseFloat(document.getElementById('speed')?.value||'1');
+    const base = 1000 / speed;
+    for(let i=0;i<sc.edges.length;i++){
+      const id = sc.edges[i]; const g = E(id); if(!g) continue;
+      if(stepInfo) stepInfo.textContent = `${i+1}. ${sc.labels[i]||''}`;
+      await animateEdge(g, base);
+      await new Promise(r=>{ const t=setTimeout(()=>{r();}, 140/speed); timers.push(t); });
+    }
+    if(stepInfo) stepInfo.textContent = 'Bitti';
+    isAnimating = false;
+  }
+  const playFall = document.getElementById('playFall'); if(playFall) playFall.addEventListener('click', ()=> animateScenario('fall'));
+  const playGas  = document.getElementById('playGas');  if(playGas)  playGas.addEventListener('click',  ()=> animateScenario('gas'));
+  const playDoor = document.getElementById('playDoor'); if(playDoor) playDoor.addEventListener('click', ()=> animateScenario('door'));
+  const resetBtn = document.getElementById('resetAnim'); if(resetBtn) resetBtn.addEventListener('click', clearAll);
+
+  // === Envanter Arama & Toplam ===
+  (function(){
+    const table = document.getElementById('envanter'); if(!table) return;
+    const rows=[...table.querySelectorAll('tbody tr')];
+    rows.forEach(r=>{ r.setAttribute('data-text', r.innerText.toLowerCase()); });
+    const out=document.getElementById('invTotal');
+    function sum(){
+      let t=0; rows.forEach(r=>{ if(r.style.display!=='none'){ const c=r.querySelector('.price'); t += parseFloat(c?.dataset?.val||'0'); }});
+      if(out) out.textContent = t.toLocaleString('tr-TR',{minimumFractionDigits:2, maximumFractionDigits:2}) + ' ₺';
+    }
+    const search=document.getElementById('invSearch'); if(search) search.addEventListener('input',e=>{
+      const q=e.target.value.trim().toLowerCase();
+      rows.forEach(r=>{ r.style.display = r.getAttribute('data-text').includes(q) ? '' : 'none'; });
+      sum();
+    });
+    sum();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Carelio • Echo Show • Loona • Arduino — Akış Diyagramı (Etkileşimli)</title>
+<style>
+  :root{
+    --bg:#0e1116;
+    --panel:#151a21;
+    --edge:#6b7280;
+    --node:#e5e7eb;
+    --active:#22c55e;
+    --active2:#38bdf8;
+    --warn:#f59e0b;
+    --danger:#ef4444;
+    --muted:0.18;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:#e5e7eb;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+  header{padding:14px 18px;border-bottom:1px solid #202631;background:linear-gradient(180deg,#121720,#0e1116)}
+  h1{margin:0;font-size:18px;font-weight:700;letter-spacing:.2px}
+  .wrap{display:grid;grid-template-columns:320px 1fr;gap:16px;padding:16px}
+  @media (max-width:980px){.wrap{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid #252b36;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .left{padding:14px}
+  .left h2{font-size:15px;margin:6px 0 12px}
+  .btn{display:block;width:100%;margin:8px 0;padding:10px 12px;border-radius:12px;border:1px solid #2b3341;background:#0f1420;color:#e5e7eb;cursor:pointer;font-weight:600}
+  .btn:hover{border-color:#3a4558;background:#121a2a}
+  .btn:active{transform:translateY(1px)}
+  .group-title{margin-top:10px;font-size:12px;font-weight:700;text-transform:uppercase;opacity:.8;letter-spacing:.6px}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .chip{font-size:12px;padding:4px 8px;border:1px solid #2b3341;border-radius:999px;background:#0f1420}
+  .chip b{padding-left:6px}
+  .reset{margin-top:12px;background:#1b2432}
+  .canvas{position:relative}
+  svg{width:100%;height:780px;display:block}
+  .node rect{fill:#101623;stroke:#3a4558;stroke-width:1.2}
+  .node text{fill:var(--node);font-size:12px;font-weight:600}
+  .edge{stroke:var(--edge);stroke-width:2;opacity:.9}
+  .edge-label{fill:#9ca3af;font-size:11px;opacity:.95}
+  .muted{opacity:var(--muted) !important;filter:saturate(.3)}
+  .active-edge{stroke:var(--active);stroke-width:4;opacity:1}
+  .active-edge.warn{stroke:var(--warn)}
+  .active-edge.danger{stroke:var(--danger)}
+  .active-node rect{stroke:var(--active2);stroke-width:2.5;filter:drop-shadow(0 0 10px rgba(56,189,248,.35))}
+  .pulse{animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{
+    0%{filter:drop-shadow(0 0 0 rgba(56,189,248,.0))}
+    50%{filter:drop-shadow(0 0 12px rgba(56,189,248,.55))}
+    100%{filter:drop-shadow(0 0 0 rgba(56,189,248,.0))}
+  }
+  footer{padding:10px 14px;opacity:.7;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Carelio · Echo Show · Loona · Arduino · Akıllı Ev — Akış Diyagramı (Etkileşimli)</h1>
+</header>
+
+<div class="wrap">
+  <aside class="panel left">
+    <h2>İşlemler</h2>
+    <div class="group-title">Hatırlatma</div>
+    <button class="btn" onclick="highlight('medicine')">İlaç Zamanı (Alexa → HA → Echo/Loona)</button>
+    <button class="btn" onclick="highlight('ack')">Görsel/Sesli Onay (Echo Show ekran & anons)</button>
+    <button class="btn" onclick="highlight('pillok')">Arduino Onayı (PILL_OK → Teşekkür akışı)</button>
+
+    <div class="group-title">Acil / Senaryolar</div>
+    <button class="btn" onclick="highlight('emergency')">Acil Durum (Siren/Işık + Loona uyarısı)</button>
+    <button class="btn" onclick="highlight('call')">Görüntülü Görüşme (Echo Show ↔ Kullanıcı)</button>
+
+    <div class="group-title">Temizle</div>
+    <button class="btn reset" onclick="resetView()">Tüm vurguları sıfırla</button>
+
+    <div class="group-title">Açıklama</div>
+    <div class="legend">
+      <span class="chip">Aktif yol: <b style="color:var(--active)">yeşil</b></span>
+      <span class="chip">Uyarı/Alarm: <b style="color:var(--warn)">sarı</b></span>
+      <span class="chip">Acil/Tehlike: <b style="color:var(--danger)">kırmızı</b></span>
+    </div>
+  </aside>
+
+  <main class="panel canvas">
+    <svg viewBox="0 0 1200 780" xmlns="http://www.w3.org/2000/svg">
+      <!-- Arrow heads -->
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+          <polygon points="0 0, 10 5, 0 10" fill="#9aa4b2"></polygon>
+        </marker>
+        <marker id="arrowActive" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+          <polygon points="0 0, 12 6, 0 12" fill="var(--active)"></polygon>
+        </marker>
+        <marker id="arrowWarn" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+          <polygon points="0 0, 12 6, 0 12" fill="var(--warn)"></polygon>
+        </marker>
+        <marker id="arrowDanger" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+          <polygon points="0 0, 12 6, 0 12" fill="var(--danger)"></polygon>
+        </marker>
+      </defs>
+
+      <!-- Nodes -->
+      <g id="nodeAlexa" class="node">
+        <rect x="50" y="60" rx="14" ry="14" width="240" height="80"></rect>
+        <text x="170" y="95" text-anchor="middle">Alexa Cloud</text>
+        <text x="170" y="115" text-anchor="middle">(Skills / Routines)</text>
+      </g>
+
+      <g id="nodeEcho" class="node">
+        <rect x="330" y="60" rx="14" ry="14" width="240" height="80"></rect>
+        <text x="450" y="95" text-anchor="middle">Echo Show</text>
+        <text x="450" y="115" text-anchor="middle">(STT / TTS / Anons)</text>
+      </g>
+
+      <g id="nodePi" class="node">
+        <rect x="330" y="270" rx="14" ry="14" width="260" height="120"></rect>
+        <text x="460" y="305" text-anchor="middle">Raspberry Pi</text>
+        <text x="460" y="325" text-anchor="middle">Home Assistant · Node-RED</text>
+        <text x="460" y="345" text-anchor="middle">Mosquitto MQTT · TTS (Flask:5005)</text>
+      </g>
+
+      <g id="nodeSpeaker" class="node">
+        <rect x="640" y="270" rx="14" ry="14" width="220" height="100"></rect>
+        <text x="750" y="305" text-anchor="middle">Hoparlör / Amplifier</text>
+        <text x="750" y="325" text-anchor="middle">(Loona'nın duyacağı)</text>
+      </g>
+
+      <g id="nodeLoona" class="node">
+        <rect x="900" y="270" rx="14" ry="14" width="220" height="100"></rect>
+        <text x="1010" y="305" text-anchor="middle">Loona Robot</text>
+        <text x="1010" y="325" text-anchor="middle">(Animasyon / Ses)</text>
+      </g>
+
+      <g id="nodeArduino" class="node">
+        <rect x="90" y="500" rx="14" ry="14" width="220" height="100"></rect>
+        <text x="200" y="535" text-anchor="middle">Arduino / ESP32</text>
+        <text x="200" y="555" text-anchor="middle">Buton · LED · Buzzer</text>
+      </g>
+
+      <g id="nodeDevices" class="node">
+        <rect x="370" y="500" rx="14" ry="14" width="220" height="100"></rect>
+        <text x="480" y="535" text-anchor="middle">Akıllı Ev Cihazları</text>
+        <text x="480" y="555" text-anchor="middle">Işık · Priz · Kilit · Sensör</text>
+      </g>
+
+      <g id="nodeUser" class="node">
+        <rect x="900" y="500" rx="14" ry="14" width="220" height="100"></rect>
+        <text x="1010" y="535" text-anchor="middle">Kullanıcı</text>
+        <text x="1010" y="555" text-anchor="middle">(Yaşlı birey)</text>
+      </g>
+
+      <!-- Edges (default) -->
+      <!-- Top: Alexa → Echo -->
+      <g id="edge_Alexa_Echo" class="edge">
+        <line x1="290" y1="100" x2="330" y2="100" marker-end="url(#arrow)"></line>
+        <text class="edge-label" x="310" y="85">Voice/Intent</text>
+      </g>
+
+      <!-- Echo → Pi (Routine/Service) -->
+      <g id="edge_Echo_Pi" class="edge">
+        <path d="M450,140 C450,200 460,210 460,270" fill="none" marker-end="url(#arrow)"></path>
+        <text class="edge-label" x="470" y="210">Routine → HA Service</text>
+      </g>
+
+      <!-- Pi → Echo (TTS) -->
+      <g id="edge_Pi_Echo" class="edge">
+        <path d="M460,270 C460,210 470,190 470,140" fill="none" marker-end="url(#arrow)"></path>
+        <text class="edge-label" x="490" y="205">media_player.play_media (TTS)</text>
+      </g>
+
+      <!-- Pi → Speaker (TTS 5005) -->
+      <g id="edge_Pi_Spk" class="edge">
+        <line x1="590" y1="320" x2="640" y2="320" marker-end="url(#arrow)"></line>
+        <text class="edge-label" x="615" y="305">HTTP GET → :5005/speak</text>
+      </g>
+
+      <!-- Speaker → Loona (Sound field) -->
+      <g id="edge_Spk_Loona" class="edge">
+        <line x1="860" y1="320" x2="900" y2="320" marker-end="url(#arrow)"></line>
+        <text class="edge-label" x="880" y="305">Ses (komut)</text>
+      </g>
+
+      <!-- Pi → Devices (lights/sirens) -->
+      <g id="edge_Pi_Devices" class="edge">
+        <path d="M460,390 C470,430 480,450 480,500" fill="none" marker-end="url(#arrow)"></path>
+        <text class="edge-label" x="500" y="440">Zigbee/Z‑Wave/Wi‑Fi</text>
+      </g>
+
+      <!-- Arduino → Pi (Serial) -->
+      <g id="edge_Arduino_Pi" class="edge">
+        <path d="M310,550 C340,550 360,400 360,400 C360,360 360,340 360,340" fill="none" marker-end="url(#arrow)"></path>
+        <text class="edge-label" x="330" y="470">USB Serial 115200 · PILL_OK</text>
+      </g>
+
+      <!-- Echo ↔ User -->
+      <g id="edge_Echo_User1" class="edge">
+        <path d="M570,120 C700,120 1010,180 1010,500" fill="none" marker-end="url(#arrow)"></path>
+        <text class="edge-label" x="860" y="150">Anons / Ekran</text>
+      </g>
+      <g id="edge_User_Echo" class="edge">
+        <path d="M1010,500 C1010,450 800,200 570,140" fill="none" marker-end="url(#arrow)"></path>
+        <text class="edge-label" x="860" y="260">Kullanıcı konuşması</text>
+      </g>
+
+      <!-- Loona → User -->
+      <g id="edge_Loona_User" class="edge">
+        <path d="M1010,370 C1010,400 1010,430 1010,500" fill="none" marker-end="url(#arrow)"></path>
+        <text class="edge-label" x="1030" y="430">Animasyon / Ses</text>
+      </g>
+    </svg>
+  </main>
+</div>
+
+<footer>
+  <div>💡 İpucu: Butonlara tıklayın; ilgili adımlar yeşil renkle vurgulanır. “Acil Durum” senaryosu kırmızı-sarıyla işaretlenir.</div>
+</footer>
+
+<script>
+const edges = [
+  "edge_Alexa_Echo","edge_Echo_Pi","edge_Pi_Echo","edge_Pi_Spk","edge_Spk_Loona",
+  "edge_Pi_Devices","edge_Arduino_Pi","edge_Echo_User1","edge_User_Echo","edge_Loona_User"
+];
+const nodes = [
+  "nodeAlexa","nodeEcho","nodePi","nodeSpeaker","nodeLoona","nodeArduino","nodeDevices","nodeUser"
+];
+
+function resetView(){
+  edges.forEach(id=>{
+    const e = document.getElementById(id);
+    e.classList.remove("active-edge","warn","danger","muted");
+    // reset marker color
+    e.querySelectorAll("line,path").forEach(el=>el.setAttribute("marker-end","url(#arrow)"));
+  });
+  nodes.forEach(id=>{
+    const n = document.getElementById(id);
+    n.classList.remove("active-node","pulse","muted");
+  });
+}
+
+function setMutedExcept(activeEdgeIds, activeNodeIds){
+  // mute all first
+  edges.forEach(id=>{
+    const e = document.getElementById(id);
+    if(!activeEdgeIds.includes(id)) e.classList.add("muted");
+    else e.classList.remove("muted");
+  });
+  nodes.forEach(id=>{
+    const n = document.getElementById(id);
+    if(!activeNodeIds.includes(id)) n.classList.add("muted");
+    else n.classList.remove("muted");
+  });
+}
+
+function paintEdges(ids, style="active"){
+  ids.forEach(id=>{
+    const g = document.getElementById(id);
+    g.classList.add("active-edge");
+    if(style==="warn") g.classList.add("warn");
+    if(style==="danger") g.classList.add("danger");
+    g.querySelectorAll("line,path").forEach(el=>{
+      const marker = style==="danger" ? "url(#arrowDanger)" : style==="warn" ? "url(#arrowWarn)" : "url(#arrowActive)";
+      el.setAttribute("marker-end", marker);
+    });
+  });
+}
+
+function paintNodes(ids){
+  ids.forEach(id=>{
+    const n = document.getElementById(id);
+    n.classList.add("active-node","pulse");
+  });
+}
+
+function highlight(type){
+  resetView();
+  let e=[], n=[], style="active";
+  switch(type){
+    case "medicine":
+      e=["edge_Alexa_Echo","edge_Echo_Pi","edge_Pi_Echo","edge_Pi_Spk","edge_Spk_Loona","edge_Pi_Devices"];
+      n=["nodeAlexa","nodeEcho","nodePi","nodeSpeaker","nodeLoona","nodeDevices"];
+      break;
+    case "ack":
+      e=["edge_Pi_Echo","edge_Echo_User1"];
+      n=["nodeEcho","nodePi","nodeUser"];
+      break;
+    case "pillok":
+      e=["edge_Arduino_Pi","edge_Pi_Echo"];
+      n=["nodeArduino","nodePi","nodeEcho"];
+      break;
+    case "emergency":
+      e=["edge_Echo_Pi","edge_Pi_Echo","edge_Pi_Spk","edge_Spk_Loona","edge_Pi_Devices","edge_Echo_User1"];
+      n=["nodeEcho","nodePi","nodeSpeaker","nodeLoona","nodeDevices","nodeUser"];
+      style="danger";
+      break;
+    case "call":
+      e=["edge_Echo_User1","edge_User_Echo"];
+      n=["nodeEcho","nodeUser"];
+      style="warn";
+      break;
+  }
+  setMutedExcept(e,n);
+  paintEdges(e, style);
+  paintNodes(n);
+}
+
+</script>
+</body>
+</html>
